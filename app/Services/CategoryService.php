@@ -26,11 +26,13 @@ class CategoryService
     {
         $category = Category::findOrFail($id);
         $category->update($data);
+
         return $category;
     }
 
     public function delete(int $id): void
     {
-        Category::destroy($id);
+        $category = Category::findOrFail($id);
+        $category->delete();
     }
 }

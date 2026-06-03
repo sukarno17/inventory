@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateItemRequest extends FormRequest
 {
@@ -25,9 +27,24 @@ class UpdateItemRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama item wajib diisi jika kolom ini dikirim.',
-            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
-            'price.numeric' => 'Harga harus berupa angka.',
+            'quantity.required' => 'Quantity wajib diisi jika kolom ini dikirim.',
+            'quantity.integer' => 'Quantity harus berupa angka bulat.',
+            'quantity.min' => 'The quantity field must be at least 0.',
+            'price.required' => 'Price wajib diisi jika kolom ini dikirim.',
+            'price.numeric' => 'Price harus berupa angka.',
+            'price.min' => 'The price field must be at least 0.',
             'category_id.exists' => 'Kategori tidak ditemukan.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'error',
+                'data' => null,
+                'message' => $validator->errors()->first()
+            ], 400)
+        );
     }
 }

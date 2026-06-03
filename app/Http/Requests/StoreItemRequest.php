@@ -3,12 +3,14 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Ubah menjadi true agar request diizinkan
+        return true;
     }
 
     public function rules(): array
@@ -25,11 +27,25 @@ class StoreItemRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama item wajib diisi.',
-            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
-            'quantity.min' => 'Jumlah minimal adalah 0.',
-            'price.numeric' => 'Harga harus berupa angka.',
-            'price.min' => 'Harga minimal adalah 0.',
+            'quantity.required' => 'Quantity wajib diisi.',
+            'quantity.integer' => 'Quantity harus berupa angka bulat.',
+            'quantity.min' => 'The quantity field must be at least 0.',
+            'price.required' => 'Price wajib diisi.',
+            'price.numeric' => 'Price harus berupa angka.',
+            'price.min' => 'The price field must be at least 0.',
+            'category_id.required' => 'Category wajib diisi.',
             'category_id.exists' => 'Kategori tidak ditemukan.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'error',
+                'data' => null,
+                'message' => $validator->errors()->first()
+            ], 400)
+        );
     }
 }
