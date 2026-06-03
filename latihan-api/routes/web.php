@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/hello', function () {
     return response()->json([
-        'message' => 'Hello karno',
-        'status' => 'welcome karno'
+        'message' => 'Hello World',
+        'status' => 'success'
     ], 200);
 });
