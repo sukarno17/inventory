@@ -23,7 +23,7 @@ class ItemController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $this->svc->all(),
-            'message' => 'Berhasil menarik semua data Item'
+            'message' => 'Berhasil menarik semua data Item beserta kategori'
         ]);
     }
 
