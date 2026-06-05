@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreItemRequest;
@@ -23,7 +23,7 @@ class ItemController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $this->svc->all(),
-            'message' => 'Berhasil menarik semua data Item beserta kategori'
+            'message' => 'Berhasil menarik semua data Item'
         ]);
     }
 

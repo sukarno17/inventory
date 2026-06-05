@@ -1,9 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CategoryController;
 
-Route::apiResource('categories', CategoryController::class);
+// Rute Publik (Otomatis menjadi api/v1/register)
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
-Route::apiResource('items', ItemController::class);
+// Rute Terproteksi Token
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::apiResource('categories', CategoryController::class)->except(['destroy']);
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->middleware('role:admin');
+
+    Route::apiResource('items', ItemController::class)->except(['destroy']);
+    Route::delete('items/{item}', [ItemController::class, 'destroy'])->middleware('role:admin');
+
+});
