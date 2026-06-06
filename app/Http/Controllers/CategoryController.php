@@ -2,135 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\CategoryService;
+use App\Http\Controllers\Api\BaseController; // 1. Import BaseController sesuai modul
 use Exception;
-use Illuminate\Http\JsonResponse;
 
-class CategoryController extends Controller
+class CategoryController extends BaseController // 2. Ubah extend ke BaseController
 {
     protected CategoryService $svc;
 
+    // Inject CategoryService melalui Constructor
     public function __construct(CategoryService $svc)
     {
         $this->svc = $svc;
     }
 
-    public function index(): JsonResponse
+    public function index()
     {
-        return response()->json([
-            'status' => 'success',
-            'data' => $this->svc->all(),
-            'message' => 'Berhasil menarik semua data Kategori'
-        ]);
+        // 3. Gunakan $this->success() untuk response wrapper yang konsisten
+        return $this->success($this->svc->all(), 'Berhasil menarik semua data Kategori'); 
     }
 
-    public function store(StoreCategoryRequest $req): JsonResponse
+    public function store(StoreCategoryRequest $req)
     {
         $cat = $this->svc->create($req->validated());
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $cat,
-            'message' => 'Kategori berhasil dibuat'
-        ], 201);
+        // 4. Berikan parameter status code 201 untuk data Created
+        return $this->success($cat, "Kategori dibuat", 201); 
     }
 
-    public function show($id): JsonResponse
+    public function show($id)
     {
         try {
             $cat = $this->svc->find($id);
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $cat,
-                'message' => 'Berhasil menarik satu data kategori'
-            ]);
+            return $this->success($cat, 'Berhasil menarik satu data kategori');
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'message' => 'Kategori tidak ditemukan'
-            ], 404);
+            // 5. Gunakan $this->error() jika terjadi exception (404 Not Found)
+            return $this->error($e->getMessage(), 404); 
         }
     }
 
-    public function update(UpdateCategoryRequest $req, $id): JsonResponse
+    public function update(UpdateCategoryRequest $req, $id)
     {
-        try {
-            $cat = $this->svc->update($id, $req->validated());
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $cat,
-                'message' => 'Kategori berhasil diperbarui'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'message' => 'Kategori tidak ditemukan'
-            ], 404);
-        }
+        $cat = $this->svc->update($id, $req->validated());
+        return $this->success($cat, "Kategori diperbarui");
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy($id)
     {
-        try {
-            $this->svc->delete($id);
-
-            return response()->json([
-                'status' => 'success',
-                'data' => null,
-                'message' => 'Kategori berhasil dihapus'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'data' => null,
-                'message' => 'Kategori tidak ditemukan'
-            ], 404);
-        }
-    }
-use App\Models\Category;
-use Illuminate\Http\Request;
-
-class CategoryController extends Controller
-{
-    public function index()
-    {
-        return Category::all();
-    }
-
-    public function store(Request $request)
-    {
-        $category = Category::create($request->all());
-
-        return response()->json($category, 201);
-    }
-
-    public function show(string $id)
-    {
-        return Category::findOrFail($id);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $category = Category::findOrFail($id);
-
-        $category->update($request->all());
-
-        return response()->json($category);
-    }
-
-    public function destroy(string $id)
-    {
-        Category::destroy($id);
-
-        return response()->json([
-            'message' => 'Category deleted'
-        ]);
+        $this->svc->delete($id);
+        // 6. Berikan parameter null dan status code 204 untuk No Content
+        return $this->success(null, "Kategori dihapus", 204); 
     }
 }
