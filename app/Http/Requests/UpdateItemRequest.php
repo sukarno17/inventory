@@ -3,8 +3,11 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+<<<<<<< HEAD
+=======
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+>>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
 
 class UpdateItemRequest extends FormRequest
 {
@@ -27,6 +30,14 @@ class UpdateItemRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama item wajib diisi jika kolom ini dikirim.',
+<<<<<<< HEAD
+            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'category_id.exists' => 'Kategori tidak ditemukan.',
+        ];
+    }
+}
+=======
             'quantity.required' => 'Quantity wajib diisi jika kolom ini dikirim.',
             'quantity.integer' => 'Quantity harus berupa angka bulat.',
             'quantity.min' => 'The quantity field must be at least 0.',
@@ -59,3 +70,4 @@ class UpdateItemRequest extends FormRequest
         $this->merge($input); 
     }
 }
+>>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
