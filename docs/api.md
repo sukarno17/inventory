@@ -18,3 +18,6 @@ Base URL: http://localhost:8000/api/v1
 * **GET /items/{id}** - Melihat detail satu item barang.
 * **PUT /items/{id}** - Memperbarui data spesifik item.
 * **DELETE /items/{id}** - Menghapus item barang (Khusus Admin).
+
+### GET /api/v1/items?category_id={id}
+Description: Filter items by category, optional.
