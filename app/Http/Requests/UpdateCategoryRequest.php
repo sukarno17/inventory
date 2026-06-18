@@ -28,4 +28,18 @@ class UpdateCategoryRequest extends FormRequest
             'name.unique' => 'Nama kategori sudah digunakan.',
         ];
     }
+<<<<<<< HEAD
+=======
+    protected function prepareForValidation() {
+        $input = $this->all();
+
+        array_walk($input, function (&$val) {
+            if (is_string($val)) {
+                $val = trim(strip_tags($val));
+            }
+        });
+
+        $this->merge($input); 
+    }
+>>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
 }
