@@ -33,7 +33,7 @@ class ItemController extends BaseController
 
         // PERBAIKAN: Menghapus sisa array bracket yang menyebabkan error 
         return $this->success($item, 'Item berhasil dibuat', 201);
->>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
+
     }
 
     public function show($id): JsonResponse
@@ -43,7 +43,7 @@ class ItemController extends BaseController
             return $this->success($item, 'Berhasil menarik satu data Item'); // [cite: 117]
         } catch (Exception $e) {
             return $this->error($e->getMessage(), 404);
->>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
+
         }
     }
 
@@ -60,6 +60,6 @@ class ItemController extends BaseController
 
         // Mengembalikan response kosong dengan status code 204 No Content 
         return $this->success(null, 'Item berhasil dihapus', 204);
->>>>>>> 1b222980c6ed6bd6c754b3ea762dfe7c271a7d81
+
     }
 }
