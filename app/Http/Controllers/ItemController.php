@@ -6,60 +6,139 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
 use Exception;
-use App\Http\Controllers\Api\BaseController; // Telah mengimpor BaseController 
+use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request; // Diperlukan untuk mengambil query parameter
+use Illuminate\Http\Request;
 
-class ItemController extends BaseController 
+class ItemController extends BaseController
 {
     protected ItemService $svc;
 
-    // Inject ItemService melalui Constructor [cite: 106]
+
     public function __construct(ItemService $svc)
     {
         $this->svc = $svc;
-        // Middleware auth:sanctum sebaiknya dilepas dari sini karena sudah ditangani oleh routes/api.php 
     }
 
-    public function index(): JsonResponse
+
+    /**
+     * GET /api/v1/items
+     * GET /api/v1/items?category_id={id}
+     */
+    public function index(Request $request): JsonResponse
     {
-        // Menggunakan standard response wrapper [cite: 109]
-        return $this->success($this->svc->all(), 'Berhasil menarik semua data Item');
+        $items = $this->svc->all();
+
+        // Filter berdasarkan category_id
+        if ($request->filled('category_id')) {
+
+            $items = $items->filter(function ($item) use ($request) {
+
+                return $item->category_id == $request->category_id;
+
+            });
+
+        }
+
+
+        return $this->success(
+            $items->values(),
+            'Berhasil menarik data Item'
+        );
     }
 
+
+
+    /**
+     * POST /api/v1/items
+     */
     public function store(StoreItemRequest $req): JsonResponse
     {
-        $item = $this->svc->create($req->validated());
+        $item = $this->svc->create(
+            $req->validated()
+        );
 
-        // PERBAIKAN: Menghapus sisa array bracket yang menyebabkan error 
-        return $this->success($item, 'Item berhasil dibuat', 201);
 
+        return $this->success(
+            $item,
+            'Item berhasil dibuat',
+            201
+        );
     }
 
+
+
+    /**
+     * GET /api/v1/items/{id}
+     */
     public function show($id): JsonResponse
     {
         try {
+
             $item = $this->svc->find($id);
-            return $this->success($item, 'Berhasil menarik satu data Item'); // [cite: 117]
+
+
+            return $this->success(
+                $item,
+                'Berhasil menarik satu data Item'
+            );
+
+
         } catch (Exception $e) {
-            return $this->error($e->getMessage(), 404);
+
+
+            return $this->error(
+                $e->getMessage(),
+                404
+            );
 
         }
     }
 
-    public function update(UpdateItemRequest $req, $id): JsonResponse
-    {
-        $item = $this->svc->update($id, $req->validated());
 
-        return $this->success($item, 'Item berhasil diperbarui'); // [cite: 123, 125]
+
+
+    /**
+     * PUT /api/v1/items/{id}
+     */
+    public function update(
+        UpdateItemRequest $req,
+        $id
+    ): JsonResponse {
+
+
+        $item = $this->svc->update(
+            $id,
+            $req->validated()
+        );
+
+
+        return $this->success(
+            $item,
+            'Item berhasil diperbarui'
+        );
+
     }
 
+
+
+
+
+    /**
+     * DELETE /api/v1/items/{id}
+     */
     public function destroy($id): JsonResponse
     {
+
         $this->svc->delete($id);
 
-        // Mengembalikan response kosong dengan status code 204 No Content 
-        return $this->success(null, 'Item berhasil dihapus', 204);
+
+        return $this->success(
+            null,
+            'Item berhasil dihapus',
+            204
+        );
 
     }
+
 }
