@@ -11,11 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ->withMiddleware(function (Middleware $middleware) {
+        // Menambahkan middleware CORS untuk rute API secara global/spesifik
+        $middleware->api(prepend: [
+            \Fruitcake\Cors\HandleCors::class, // atau middleware cors bawaan laravel
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
